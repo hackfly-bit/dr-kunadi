@@ -8,4 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Keluarga extends Model
 {
     use HasFactory;
+    // define the factory
+    protected $fillable = ['nama', 'deskripsi'];
+    
 }

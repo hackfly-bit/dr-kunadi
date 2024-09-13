@@ -12,8 +12,14 @@ class NutritionLogSettingController extends Controller
      */
     public function index()
     {
-        //
+        $page = $request->page ?? 1;
+        $per_page = $request->per_page ?? 10;
+        $data = NutritionLogSetting::all()->makeHidden(['created_at', 'updated_at']);
+
+        return response()->json(paginate($data,$page, $per_page), 200);
     }
+
+
 
     /**
      * Show the form for creating a new resource.
@@ -28,7 +34,27 @@ class NutritionLogSettingController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'activity' => 'required',
+            'description' => 'required',
+            // 'active' => 'required',
+        ]);
+
+        $nutritionLogSetting = new NutritionLogSetting();
+        $nutritionLogSetting->activity = $request->activity;
+        $nutritionLogSetting->description = $request->description;
+        $nutritionLogSetting->active = $request->active ?? true;
+
+        if (!$nutritionLogSetting->save()) {
+            return response()->json([
+                'message' => 'Failed to save data'
+            ], 500);
+        }
+
+        return response()->json([
+            'data' => $nutritionLogSetting,
+            'message' => 'Data saved successfully'
+        ], 200);
     }
 
     /**
@@ -36,7 +62,8 @@ class NutritionLogSettingController extends Controller
      */
     public function show(NutritionLogSetting $nutritionLogSetting)
     {
-        //
+        $data  = NutritionLogSetting::find($nutritionLogSetting)->makeHidden(['created_at', 'updated_at']);
+        return response()->json($data, 200);
     }
 
     /**
@@ -52,7 +79,28 @@ class NutritionLogSettingController extends Controller
      */
     public function update(Request $request, NutritionLogSetting $nutritionLogSetting)
     {
-        //
+        $request->validate([
+            'activity' => 'required',
+            'description' => 'required',
+            // 'active' => 'required',
+        ]);
+
+        $nutritionLogSetting  = NutritionLogSetting::find($nutritionLogSetting);
+        $nutritionLogSetting->activity = $request->activity;
+        $nutritionLogSetting->description = $request->description;
+        $nutritionLogSetting->active = $request->active ?? true;
+
+ 
+        if (!$nutritionLogSetting->save()) {
+            return response()->json([
+                'message' => 'Failed to update data'
+            ], 500);
+        }
+
+        return response()->json([
+            'data' => $nutritionLogSetting,
+            'message' => 'Data updated successfully'
+        ], 200);
     }
 
     /**
@@ -60,6 +108,14 @@ class NutritionLogSettingController extends Controller
      */
     public function destroy(NutritionLogSetting $nutritionLogSetting)
     {
-        //
+        if (!$nutritionLogSetting->delete()) {
+            return response()->json([
+                'message' => 'Failed to delete data'
+            ], 500);
+        }
+
+        return response()->json([
+            'message' => 'Data deleted successfully'
+        ], 200);
     }
 }

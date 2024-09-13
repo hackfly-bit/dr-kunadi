@@ -35,10 +35,12 @@ class LadderServiceProvider extends ServiceProvider
             'delete',
         ])->description('Administrator users can perform any action.');
 
-        Ladder::role('editor', 'Editor', [
-            'read',
+        Ladder::role('user', 'User', [
             'create',
-            'update',
-        ])->description('Editor users have the ability to read, create, and update.');
+            'read',
+            'update',   
+            'delete',
+        ])->description('User users can only read data.');
+
     }
 }

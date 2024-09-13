@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Auth as UserAuth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
-class Auth extends Controller
+class AuthController extends Controller
 {
     public function register(Request $request)
     {
@@ -28,6 +28,10 @@ class Auth extends Controller
             'password' => Hash::make($request->password)
         ]);
 
+        $assignRole = $user->roles()->updateOrCreate([
+            'role' => 'user'
+        ]);
+
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()->json([
@@ -37,30 +41,33 @@ class Auth extends Controller
         ]);
     }
 
-    public function login(Request $request)
-    {
-        if (! UserAuth::attempt($request->only('email', 'password'))) {
-            return response()->json([
-                'message' => 'Unauthorized'
-            ], 401);
-        }
-
-        $user = User::where('email', $request->email)->firstOrFail();
-
-        $token = $user->createToken('auth_token')->plainTextToken;
-
-        return response()->json([
-            'message' => 'Login success',
-            'access_token' => $token,
-            'token_type' => 'Bearer'
+    public function login(Request $request){
+        $loginUserData = $request->validate([
+            'email'=>'required|string|email',
+            'password'=>'required|min:8'
         ]);
+        $user = User::where('email',$loginUserData['email'])->first();
+        if(!$user || !Hash::check($loginUserData['password'],$user->password)){
+            return response()->json([
+                'message' => 'Invalid Credentials'
+            ],401);
+        }
+        $token = $user->createToken($user->name.'-AuthToken')->plainTextToken;
+        return response()->json([
+            'message' => 'Login Success',
+            'nama' => $user->name,
+            'email' => $user->email,
+            'role' => $user->role,
+            'access_token' => $token,
+        ],200);
     }
-
     public function logout()
     {
         UserAuth::user()->tokens()->delete();
+        // error handling
         return response()->json([
-            'message' => 'logout success'
-        ]);
+            'message' => 'Logged out'
+        ], 200);
+        
     }
 }
