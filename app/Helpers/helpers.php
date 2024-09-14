@@ -1,5 +1,7 @@
 <?php
 
+use Illuminate\Support\Facades\Storage;
+
 if (!function_exists('paginate')) {
     function paginate($data, $page, $limit)
     {
@@ -12,5 +14,21 @@ if (!function_exists('paginate')) {
             'page' => $page,
             'limit' => $limit,
         ];
+    }
+}
+
+if (!function_exists('generateUniqueFileName')) {
+    function generateUniqueFileName($file)
+    {
+        return uniqid() . '_' . time() . '.' . $file->getClientOriginalExtension();
+    }
+}
+
+if (!function_exists('removeFile')) {
+    function removeFile($filePath)
+    {
+        if ($filePath && Storage::disk('public')->exists($filePath)) {
+            Storage::disk('public')->delete($filePath);
+        }
     }
 }

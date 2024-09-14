@@ -84,19 +84,22 @@ class RekamMedisController extends Controller
      */
     public function show(User $rekamMedis)
     {
-        // $show_by = request()->get('show_by') ?? 'user_id';
-        // // user_id or no_rekam_medis
+        $rekamMedis = User::with(['rekamMedis', 'nutritionLog', 'monthlyLog', 'dailyLog'])->where('id', $rekamMedis->id)->first();
 
-        // if ($show_by == 'user_id') {
-            $rekamMedis = User::with(['rekamMedis','nutritionLog','monthlyLog', 'dailyLog'])->where('id', $rekamMedis->id)->first();   
-        // } else {
-        //     $rekamMedis = User::with(['rekamMedis','nutritionLog','monthlyLog', 'dailyLog'])->where('no_rekam_medis', )->all();
-        // }
+        return response()->json([
+            'status' => 'success',
+            'data' => $rekamMedis
+        ], 200);
     }
 
     public function showByNoRekamMedis($noRekamMedis)
     {
-        $rekamMedis = User::with(['rekamMedis','nutritionLog','monthlyLog', 'dailyLog'])->where('no_rekam_medis', $noRekamMedis)->all();
+        $rekamMedis = User::with(['rekamMedis', 'nutritionLog', 'monthlyLog', 'dailyLog'])->where('no_rekam_medis', $noRekamMedis)->all();
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $rekamMedis
+        ], 200);
     }
 
     /**
@@ -112,7 +115,22 @@ class RekamMedisController extends Controller
      */
     public function update(Request $request, RekamMedis $rekamMedis)
     {
-        //
+        $rekamMedis = RekamMedis::find($rekamMedis->id);
+        $rekamMedis->nomer_kk = $request->nomer_kk; // update nomer_kk
+
+        try {
+            $rekamMedis->save();
+
+            return response()->json([
+                'status' => 'success',
+                'data' => $rekamMedis
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage()
+            ], 500);
+        }
     }
 
     /**
@@ -120,7 +138,7 @@ class RekamMedisController extends Controller
      */
     public function destroy(RekamMedis $rekamMedis)
     {
-        //
+        
     }
 
     private function generateNoRekamMedis($noKK)
