@@ -4,15 +4,34 @@ namespace App\Http\Controllers;
 
 use App\Models\RekamMedis;
 use Illuminate\Http\Request;
+use App\Models\User;
 
 class RekamMedisController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        // rekam_medis, nutritionLog,monthlyLog,dailyLog
+
+        $log = [
+            'nutrition_log'  => 'nutritionLog',
+            'monthly_log' => 'monthlyLog',
+            'daily_log' => 'dailyLog'
+        ];
+        $get_record = $request->get('record') ?? 'rekam_medis';
+
+        if ($get_record == 'rekam_medis') {
+            $rekamMedis = User::with('rekamMedis')->get();
+        } else {
+            $rekamMedis = User::with($log[$get_record])->get();
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $rekamMedis
+        ], 200);
     }
 
     /**
@@ -28,15 +47,56 @@ class RekamMedisController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'user_id' => 'required',
+            // 'no_rekam_medis' => 'required',
+            'nomer_kk' => 'required'
+        ]);
+
+        $noRekamMedis = $this->generateNoRekamMedis($request->nomer_kk);
+
+        // make sure the no_rekam_medis is unique
+        while (RekamMedis::where('no_rekam_medis', $noRekamMedis)->exists()) {
+            $noRekamMedis = $this->generateNoRekamMedis($request->nomer_kk);
+        }
+
+        try {
+            $rekamMedis = RekamMedis::create([
+                'user_id' => $request->user_id,
+                'no_rekam_medis' => $noRekamMedis,
+                'nomer_kk' => $request->nomer_kk
+            ]);
+
+            return response()->json([
+                'status' => 'success',
+                'data' => $rekamMedis
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage()
+            ], 500);
+        }
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(RekamMedis $rekamMedis)
+    public function show(User $rekamMedis)
     {
-        //
+        // $show_by = request()->get('show_by') ?? 'user_id';
+        // // user_id or no_rekam_medis
+
+        // if ($show_by == 'user_id') {
+            $rekamMedis = User::with(['rekamMedis','nutritionLog','monthlyLog', 'dailyLog'])->where('id', $rekamMedis->id)->first();   
+        // } else {
+        //     $rekamMedis = User::with(['rekamMedis','nutritionLog','monthlyLog', 'dailyLog'])->where('no_rekam_medis', )->all();
+        // }
+    }
+
+    public function showByNoRekamMedis($noRekamMedis)
+    {
+        $rekamMedis = User::with(['rekamMedis','nutritionLog','monthlyLog', 'dailyLog'])->where('no_rekam_medis', $noRekamMedis)->all();
     }
 
     /**
@@ -61,5 +121,14 @@ class RekamMedisController extends Controller
     public function destroy(RekamMedis $rekamMedis)
     {
         //
+    }
+
+    private function generateNoRekamMedis($noKK)
+    {
+        $shortKK = substr($noKK, -5);
+        $randomString = substr(str_shuffle("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"), 0, 5);
+        $noRekamMedis = 'RM' . $shortKK . $randomString;
+
+        return $noRekamMedis;
     }
 }

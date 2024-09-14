@@ -8,6 +8,12 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Ladder\HasRoles;
+use App\Models\UserDetail;
+use App\Models\RekamMedis;
+use App\Models\DailyLog;
+use App\Models\MonthlyLogModel;
+use App\Models\NutritionLog;
+
 
 class User extends Authenticatable
 {
@@ -45,5 +51,35 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    // relationally of user with user detail
+    public function userDetail()
+    {
+        return $this->hasOne(UserDetail::class);
+    }
+
+    // relationally of user with rekam medis
+    public function rekamMedis()
+    {
+        return $this->hasOne(RekamMedis::class);
+    }
+
+    // relationally of user with daily log  
+    public function dailyLog()
+    {
+        return $this->hasMany(DailyLog::class);
+    }
+
+    // relationally of user with monthly log
+    public function monthlyLog()
+    {
+        return $this->hasMany(MonthlyLogModel::class);
+    }
+
+    // relationally of user with nutrition log
+    public function nutritionLog()
+    {
+        return $this->hasMany(NutritionLog::class);
     }
 }

@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\UserDetail;
 use Illuminate\Http\Request;
+use App\Models\User;
+use Illuminate\Support\Facades\DB;
 
 class UserDetailController extends Controller
 {
@@ -12,7 +14,12 @@ class UserDetailController extends Controller
      */
     public function index()
     {
-        //
+        $userDetail = User::with('userDetail')->makeHidden(['created_at', 'updated_at'])->get();
+
+        return response()->json([
+            'data' => $userDetail,
+            'message' => 'Data retrieved successfully'
+        ], 200);
     }
 
     /**
@@ -28,7 +35,68 @@ class UserDetailController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            // 'user_id' => 'required',
+            'name' => 'required',
+            'email' => 'required',
+            'password'  => 'required',
+            // 'keluarga_id' => 'required',
+            // 'nik' => 'required',
+            // 'nama_panggilan' => 'required',
+            // 'nama_lengkap' => 'required',
+            // 'tempat_lahir' => 'required',
+            // 'tanggal_lahir' => 'required',
+            // 'jenis_kelamin' => 'required',
+            // 'agama' => 'required',
+            // 'alamat' => 'required',
+        ]);
+
+        DB::beginTransaction();
+
+        try {
+
+            // save user first
+            $user = new User();
+            $user->name = $request->name;
+            $user->email = $request->email;
+            $user->password = bcrypt($request->password);
+            $user->save();
+
+            //  assign role to user
+            $user->roles()->updateOrCreate([
+                'role' => 'user'
+            ]);
+
+
+            $userDetail = new UserDetail();
+            $userDetail->user_id = $user->id;
+            $userDetail->keluarga_id = $request->keluarga_id;
+            $userDetail->nik = $request->nik;
+            $userDetail->nama_panggilan = $request->nama_panggilan;
+            $userDetail->nama_lengkap = $request->nama_lengkap;
+            $userDetail->tempat_lahir = $request->tempat_lahir;
+            $userDetail->tanggal_lahir = $request->tanggal_lahir;
+            $userDetail->jenis_kelamin = $request->jenis_kelamin;
+            $userDetail->agama = $request->agama;
+            $userDetail->alamat = $request->alamat;
+            $userDetail->save();
+
+            DB::commit();
+
+            return response()->json([
+                'data' => [
+                    'user' => $user,
+                    'userDetail' => $userDetail
+                ],
+                'message' => 'Data saved successfully'
+            ], 200);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'message' => 'Data save failed',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 
     /**
@@ -50,16 +118,87 @@ class UserDetailController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, UserDetail $userDetail)
+    public function update(Request $request, User $user)
     {
-        //
+        $request->validate([
+            // 'user_id' => 'required',
+            // 'keluarga_id' => 'required',
+            // 'nik' => 'required',
+            // 'nama_panggilan' => 'required',
+            // 'nama_lengkap' => 'required',
+            // 'tempat_lahir' => 'required',
+            // 'tanggal_lahir' => 'required',
+            // 'jenis_kelamin' => 'required',
+            // 'agama' => 'required',
+            // 'alamat' => 'required',
+        ]); 
+
+        DB::beginTransaction();
+
+        try {
+            // update user first
+            $user = User::find($user->id);
+            $user->name = $request->name;
+            $user->email = $request->email;
+            // $user->password = $request->password;
+            $user->save();
+
+            // update user detail
+            $userDetail = UserDetail::where('user_id', $user->id)->first();
+            $userDetail->keluarga_id = $request->keluarga_id;
+            $userDetail->nik = $request->nik;
+            $userDetail->nama_panggilan = $request->nama_panggilan;
+            $userDetail->nama_lengkap = $request->nama_lengkap;
+            $userDetail->tempat_lahir = $request->tempat_lahir;
+            $userDetail->tanggal_lahir = $request->tanggal_lahir;
+            $userDetail->jenis_kelamin = $request->jenis_kelamin;
+            $userDetail->agama = $request->agama;
+            $userDetail->alamat = $request->alamat;
+            $userDetail->save();
+
+            DB::commit();
+
+            return response()->json([
+                'data' => [
+                    'user' => $user,
+                    'userDetail' => $userDetail
+                ],
+                'message' => 'Data updated successfully'
+            ], 200);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'message' => 'Data update failed',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(UserDetail $userDetail)
+    public function destroy(User $user)
     {
-        //
+        DB::beginTransaction();
+
+        try {
+            $userDetail = UserDetail::where('user_id', $user->id)->first();
+            $userDetail->delete();
+
+            $user = User::find($user->id);
+            $user->delete();
+
+            DB::commit();
+
+            return response()->json([
+                'message' => 'Data deleted successfully'
+            ], 200);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'message' => 'Data delete failed',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 }

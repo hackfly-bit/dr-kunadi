@@ -18,7 +18,7 @@ class KeluargaController extends Controller
         $page = $request->page ?? 1;
         $per_page = $request->per_page ?? 10;
         $data = Keluarga::all()->makeHidden(['created_at', 'updated_at']);
-        return response()->json(pagination($data, $page, $per_page), 200);
+        return response()->json(paginate($data, $page, $per_page), 200);
     }
 
    

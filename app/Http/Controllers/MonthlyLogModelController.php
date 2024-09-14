@@ -12,7 +12,7 @@ class MonthlyLogModelController extends Controller
      */
     public function index()
     {
-        //
+        // 
     }
 
     /**
