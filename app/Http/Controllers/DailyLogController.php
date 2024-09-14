@@ -19,7 +19,11 @@ class DailyLogController extends Controller
         $page = $request->get('page') ?? 1;
         $perPage = $request->get('per_page') ?? 10;
 
-        $dailyLogs = DailyLog::whereBetween('date', [$startDate, $endDate])->get();
+        if(Auth::user()->hasRole('admin')) {
+            $dailyLogs = DailyLog::whereBetween('date', [$startDate, $endDate])->get();
+        } else {
+            $dailyLogs = DailyLog::where('user_id', Auth::user()->id)->whereBetween('date', [$startDate, $endDate])->get();
+        }
 
         return response()->json([
             'status' => 'success',

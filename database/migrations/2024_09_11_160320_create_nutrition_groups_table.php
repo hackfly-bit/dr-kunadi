@@ -11,12 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('nutrition_logs', function (Blueprint $table) {
+        Schema::create('nutrition_groups', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('nutrition_groups')->constrained()->cascadeOnDelete();
-            // $table->date('tanggal');
-            $table->foreignId('nutrition_log_setting_id')->constrained()->cascadeOnDelete();
-            $table->boolean('status')->default(false);
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            // $table->foreignId('nutrition_logs_id')->constrained()->cascadeOnDelete();
+            $table->date('tanggal');
             $table->timestamps();
         });
     }
@@ -26,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('nutrition_logs');
+        Schema::dropIfExists('nutrition_groups');
     }
 };
