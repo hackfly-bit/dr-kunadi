@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use Illuminate\Container\Attributes\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth as UserAuth;
 use Illuminate\Support\Facades\Hash;
@@ -41,6 +42,15 @@ class AuthController extends Controller
         ]);
     }
 
+    public function getUserDetail()
+    {
+        $auth = UserAuth::user()->id;
+        $user = User::with(['userDetail.keluarga'])->where('id', $auth)->first();
+        return response()->json([
+            'data' => $user
+        ]);
+    }
+
     public function login(Request $request){
         $loginUserData = $request->validate([
             'email'=>'required|string|email',
@@ -61,6 +71,33 @@ class AuthController extends Controller
             'access_token' => $token,
         ],200);
     }
+
+
+    // Reset password
+    public function resetPassword(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+            'password' => 'required|min:8',
+            'new_password' => 'required|min:8',
+        ]);
+
+        $user = User::where('email', $request->email)->first();
+
+        if (!$user || !Hash::check($request->password, $user->password)) {
+            return response()->json([
+                'message' => 'Invalid email or password'
+            ], 401);
+        }
+
+        $user->password = Hash::make($request->new_password);
+        $user->save();
+
+        return response()->json([
+            'message' => 'Password updated successfully'
+        ], 200);
+    }
+
     public function logout()
     {
         UserAuth::user()->tokens()->delete();

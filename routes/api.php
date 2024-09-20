@@ -9,22 +9,26 @@ use App\Http\Controllers\MonthlyLogModelController;
 use App\Http\Controllers\NutritionLogController;
 use App\Http\Controllers\NutritionLogSettingController;
 use App\Http\Controllers\RekamMedisController;
+use App\Http\Controllers\UserDetailController;
 
 // Route::get('/user', function (Request $request) {
 //     return $request->user();
 // })->middleware('auth:sanctum');
 
-// Route::prefix('auth')->group(function () {
-// Suggested code may be subject to a license. Learn more: ~LicenseLog:3056634965.
+// Auth routes
 Route::post('/register', [AuthController::class, 'register']);  
 Route::post('/login', [AuthController::class, 'login']);
+Route::get('/user', [AuthController::class, 'getUserDetail'])->middleware('auth:sanctum');
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
-// });
 
-// Route Keluarga
-Route::resource('keluarga', KeluargaController::class)->middleware('auth:sanctum');  
-Route::resource('rekam-medis', RekamMedisController::class)->middleware('auth::sanctum');
-Route::resource('daily-log', DailyLogController::class )->middleware('auth:sanctum');
-Route::resource('monthly-log', MonthlyLogModelController::class)->middleware('auth:sanctum');
-Route::resource('nutrition-log', NutritionLogController::class)->middleware('auth:sanctum');
-Route::resource('nutrition-log-setting', NutritionLogSettingController::class)->middleware('auth:sanctum');
+// Group routes with auth:sanctum middleware
+Route::middleware('auth:sanctum')->group(function () {
+    // Route Keluarga
+    Route::resource('keluarga', KeluargaController::class);  
+    Route::resource('rekam-medis', RekamMedisController::class);
+    Route::resource('daily-log', DailyLogController::class);
+    Route::resource('monthly-log', MonthlyLogModelController::class);
+    Route::resource('nutrition-log', NutritionLogController::class);
+    Route::resource('nutrition-log-setting', NutritionLogSettingController::class);
+    Route::resource('user-detail', UserDetailController::class);
+});

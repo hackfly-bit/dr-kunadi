@@ -47,36 +47,55 @@ class RekamMedisController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'user_id' => 'required',
-            // 'no_rekam_medis' => 'required',
-            'nomer_kk' => 'required'
-        ]);
+        // $request->validate([
+        //     'user_id' => 'required',
+        //     // 'no_rekam_medis' => 'required',
+        //     'nomer_kk' => 'required'
+        // ]);
 
-        $noRekamMedis = $this->generateNoRekamMedis($request->nomer_kk);
+        // $noRekamMedis = $this->generateNoRekamMedis($request->nomer_kk);
 
-        // make sure the no_rekam_medis is unique
-        while (RekamMedis::where('no_rekam_medis', $noRekamMedis)->exists()) {
-            $noRekamMedis = $this->generateNoRekamMedis($request->nomer_kk);
-        }
+        // // make sure the no_rekam_medis is unique
+        // while (RekamMedis::where('no_rekam_medis', $noRekamMedis)->exists()) {
+        //     $noRekamMedis = $this->generateNoRekamMedis($request->nomer_kk);
+        // }
 
-        try {
-            $rekamMedis = RekamMedis::create([
-                'user_id' => $request->user_id,
-                'no_rekam_medis' => $noRekamMedis,
-                'nomer_kk' => $request->nomer_kk
-            ]);
+        // try {
+        //     $rekamMedis = RekamMedis::create([
+        //         'user_id' => $request->user_id,
+        //         'no_rekam_medis' => $noRekamMedis,
+        //         'nomer_kk' => $request->nomer_kk
+        //     ]);
 
-            return response()->json([
-                'status' => 'success',
-                'data' => $rekamMedis
-            ], 200);
-        } catch (\Exception $e) {
-            return response()->json([
-                'status' => 'error',
-                'message' => $e->getMessage()
-            ], 500);
-        }
+        //     return response()->json([
+        //         'status' => 'success',
+        //         'data' => $rekamMedis
+        //     ], 200);
+        // } catch (\Exception $e) {
+        //     return response()->json([
+        //         'status' => 'error',
+        //         'message' => $e->getMessage()
+        //     ], 500);
+        // }
+
+            // 'user_id' => 'required',
+            // // 'no_rekam_medis' => 'required',
+            // 'nomer_kk' => 'required'
+
+            // cek user.userdetail.keluarga  = ayah 
+            $user = User::with('userDetail.keluarga')->where('id', $request->user_id)->first();
+            $keluarga = $user->userDetail->keluarga;
+
+            if($keluarga == 'Ayah'){
+
+            }
+
+
+        
+
+
+
+
     }
 
     /**

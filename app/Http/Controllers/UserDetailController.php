@@ -35,11 +35,10 @@ class UserDetailController extends Controller
      */
     public function store(Request $request)
     {
+
+        // return  $request;
         $request->validate([
-            // 'user_id' => 'required',
-            'name' => 'required',
-            'email' => 'required',
-            'password'  => 'required',
+            'user_id' => 'required',
             // 'keluarga_id' => 'required',
             // 'nik' => 'required',
             // 'nama_panggilan' => 'required',
@@ -56,11 +55,16 @@ class UserDetailController extends Controller
         try {
 
             // save user first
-            $user = new User();
-            $user->name = $request->name;
-            $user->email = $request->email;
-            $user->password = bcrypt($request->password);
-            $user->save();
+            $user = User::find($request->user_id);
+            if (!$user) {
+                return response()->json([
+                    'message' => 'User not found'
+                ], 404);
+            }
+            // $user->name = $request->name;
+            // $user->email = $request->email;
+            // $user->password = bcrypt($request->password);
+            // $user->save();
 
             //  assign role to user
             $user->roles()->updateOrCreate([
@@ -104,7 +108,7 @@ class UserDetailController extends Controller
      */
     public function show(UserDetail $userDetail)
     {
-        //
+
     }
 
     /**
@@ -118,7 +122,7 @@ class UserDetailController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, User $user)
+    public function update(Request $request, UserDetail $userDetail)
     {
         $request->validate([
             // 'user_id' => 'required',
@@ -136,15 +140,21 @@ class UserDetailController extends Controller
         DB::beginTransaction();
 
         try {
-            // update user first
-            $user = User::find($user->id);
-            $user->name = $request->name;
-            $user->email = $request->email;
-            // $user->password = $request->password;
-            $user->save();
+            // // update user first
+            // $user = User::find($user->id);
+            // if(!$user){
+            //     return response()->json([
+            //         'message' => 'User not found'
+            //     ], 404);
+            // }
+            // // $user->name = $request->name;
+            // // $user->email = $request->email;
+            // // // $user->password = $request->password;
+            // // $user->save();
 
-            // update user detail
-            $userDetail = UserDetail::where('user_id', $user->id)->first();
+            // // update user detail
+            $user = User::find($userDetail->user_id);
+            $userDetail = UserDetail::find($userDetail->id);
             $userDetail->keluarga_id = $request->keluarga_id;
             $userDetail->nik = $request->nik;
             $userDetail->nama_panggilan = $request->nama_panggilan;
@@ -177,21 +187,22 @@ class UserDetailController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(User $user)
+    public function destroy(UserDetail $userDetail)
     {
         DB::beginTransaction();
 
         try {
-            $userDetail = UserDetail::where('user_id', $user->id)->first();
+            $userDetail = UserDetail::where('user_id', $userDetail->id)->first();
             $userDetail->delete();
 
-            $user = User::find($user->id);
-            $user->delete();
+            $user = User::find($userDetail->user_id);
+            // $user->delete();
 
             DB::commit();
 
             return response()->json([
-                'message' => 'Data deleted successfully'
+                // 'data' => $userDetail,
+                'message' => 'Data for user ' . $user->name . ' deleted successfully'
             ], 200);
         } catch (\Exception $e) {
             DB::rollBack();

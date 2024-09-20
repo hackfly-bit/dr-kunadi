@@ -65,12 +65,13 @@ class KeluargaController extends Controller
      */
     public function show(Keluarga $keluarga)
     {
-        $keluarga = Keluarga::find($keluarga->id)->makeHidden(['created_at', 'updated_at']);
+        $keluarga = Keluarga::find($keluarga->id);
         if (!$keluarga) {
             return response()->json([
                 'message' => 'Data not found'
             ], 404);
         }
+        $keluarga->makeHidden(['created_at', 'updated_at']);
         return response()->json([
             'data' => $keluarga
         ], 200);
@@ -93,8 +94,8 @@ class KeluargaController extends Controller
             'nama' => 'required',
             'deskripsi' => 'required',
         ]);
-
-        $keluarga = Keluarga::find($keluarga->id);
+        
+       $keluarga = Keluarga::find($keluarga->id);
         if (!$keluarga) {
             return response()->json([
                 'message' => 'Data not found'
@@ -135,6 +136,7 @@ class KeluargaController extends Controller
         }
 
         return response()->json([
+            'data' => $keluarga,
             'message' => 'Data deleted successfully'
         ], 200);
     }

@@ -62,7 +62,7 @@ class NutritionLogSettingController extends Controller
      */
     public function show(NutritionLogSetting $nutritionLogSetting)
     {
-        $data  = NutritionLogSetting::find($nutritionLogSetting)->makeHidden(['created_at', 'updated_at']);
+        $data  = NutritionLogSetting::find($nutritionLogSetting->id)->makeHidden(['created_at', 'updated_at']);
         return response()->json($data, 200);
     }
 
@@ -85,7 +85,7 @@ class NutritionLogSettingController extends Controller
             // 'active' => 'required',
         ]);
 
-        $nutritionLogSetting  = NutritionLogSetting::find($nutritionLogSetting);
+        $nutritionLogSetting  = NutritionLogSetting::find($nutritionLogSetting->id);
         $nutritionLogSetting->activity = $request->activity;
         $nutritionLogSetting->description = $request->description;
         $nutritionLogSetting->active = $request->active ?? true;
