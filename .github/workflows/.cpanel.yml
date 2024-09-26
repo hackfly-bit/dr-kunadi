@@ -13,7 +13,7 @@ jobs:
 
       - name: Deploy to cPanel
         id: deploy
-        uses: pinkasey/cpanel-deploy-action@v1.0.0
+        uses: pinkasey/cpanel-deploy-action@v1.2.0
         with:
           hostname: 'https://appd.aneramedia.com'
           repository_root: '/home/anet4435/public_html/appd.aneramedia.com'
