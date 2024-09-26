@@ -14,14 +14,14 @@ jobs:
       - name: Get the latest code
         uses: actions/checkout@v3  # You can keep using this; GitHub will handle Node.js 20 transition
 
-      - name: Set up PHP
-        uses: shivammathur/setup-php@v2  # Set up the PHP version
-        with:
-          php-version: '8.1'  # Ensure you are running PHP 8.1+ if using `readonly`
-          extensions: mbstring, intl, bcmath, curl
+      # - name: Set up PHP
+      #   uses: shivammathur/setup-php@v2  # Set up the PHP version
+      #   with:
+      #     php-version: '8.1'  # Ensure you are running PHP 8.1+ if using `readonly`
+      #     extensions: mbstring, intl, bcmath, curl
 
-      - name: Install Composer
-        run: sudo apt-get install composer
+      # - name: Install Composer
+      #   run: sudo apt-get install composer
 
       - name: Copy .env
         run: php -r "file_exists('.env') || copy('.env.example', '.env');"
