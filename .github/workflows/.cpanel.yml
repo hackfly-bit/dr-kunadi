@@ -17,7 +17,7 @@ jobs:
       - name: Set up PHP
         uses: shivammathur/setup-php@v2  # Set up the PHP version
         with:
-          php-version: '8.1'  # Ensure you are running PHP 8.1+ if using `readonly`
+          php-version: '8.2'  # Ensure you are running PHP 8.1+ if using `readonly`
           extensions: mbstring, intl, bcmath, curl
 
       - name: Install Composer
