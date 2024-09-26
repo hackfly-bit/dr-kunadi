@@ -42,7 +42,6 @@ class DailyLogController extends Controller
     public function store(Request $request)
     {
         //
-
         $request->validate([
             // 'user_id' => 'required',
             'tanggal' => 'required',
@@ -136,6 +135,7 @@ class DailyLogController extends Controller
     public function update(Request $request, $id)
     {
         // Validate required fields
+        // return $request;
         $request->validate([
             'tanggal' => 'required',
             // Add other validation as needed

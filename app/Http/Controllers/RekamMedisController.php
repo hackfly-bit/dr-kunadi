@@ -47,55 +47,70 @@ class RekamMedisController extends Controller
      */
     public function store(Request $request)
     {
-        // $request->validate([
-        //     'user_id' => 'required',
-        //     // 'no_rekam_medis' => 'required',
-        //     'nomer_kk' => 'required'
-        // ]);
+        $request->validate([
+            'user_id' => 'required',
+            // 'no_rekam_medis' => 'required',
+            'nomer_kk' => 'required'
+        ]);
 
-        // $noRekamMedis = $this->generateNoRekamMedis($request->nomer_kk);
+        // cek user.userdetail.keluarga  = ayah 
+        $user = User::with('userDetail.keluarga')->where('id', $request->user_id)->first();
+        $keluargaName = $user->userDetail->keluarga->nama;
 
-        // // make sure the no_rekam_medis is unique
-        // while (RekamMedis::where('no_rekam_medis', $noRekamMedis)->exists()) {
-        //     $noRekamMedis = $this->generateNoRekamMedis($request->nomer_kk);
-        // }
+        if (!$keluargaName) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'User Detail belum diisi'
+            ], 403);
+        }
 
-        // try {
-        //     $rekamMedis = RekamMedis::create([
-        //         'user_id' => $request->user_id,
-        //         'no_rekam_medis' => $noRekamMedis,
-        //         'nomer_kk' => $request->nomer_kk
-        //     ]);
+        if (strtolower($keluargaName) == strtolower('Ayah')) {
+            $noRekamMedis = $this->generateNoRekamMedis($request->nomer_kk);
 
-        //     return response()->json([
-        //         'status' => 'success',
-        //         'data' => $rekamMedis
-        //     ], 200);
-        // } catch (\Exception $e) {
-        //     return response()->json([
-        //         'status' => 'error',
-        //         'message' => $e->getMessage()
-        //     ], 500);
-        // }
-
-            // 'user_id' => 'required',
-            // // 'no_rekam_medis' => 'required',
-            // 'nomer_kk' => 'required'
-
-            // cek user.userdetail.keluarga  = ayah 
-            $user = User::with('userDetail.keluarga')->where('id', $request->user_id)->first();
-            $keluarga = $user->userDetail->keluarga;
-
-            if($keluarga == 'Ayah'){
-
+            // make sure the no_rekam_medis is unique
+            while (RekamMedis::where('no_rekam_medis', $noRekamMedis)->exists()) {
+                $noRekamMedis = $this->generateNoRekamMedis($request->nomer_kk);
             }
 
+            try {
+                $rekamMedis = RekamMedis::create([
+                    'user_id' => $request->user_id,
+                    'no_rekam_medis' => $noRekamMedis,
+                    'nomer_kk' => $request->nomer_kk
+                ]);
 
-        
+                return response()->json([
+                    'status' => 'success',
+                    'data' => $rekamMedis
+                ], 200);
+            } catch (\Exception $e) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => $e->getMessage()
+                ], 500);
+            }
+        }
 
+        // user_id nomer_kk rekam_medis
+        $get_existing_rekam_medis = RekamMedis::where('nomer_kk', $request->nomer_kk)->first();
 
+        if (!$get_existing_rekam_medis) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Nomer RM dengan nomer KK ' . $request->nomer_kk . ' tidak ditemukan'
+            ], 404);
+        }
 
+        $rekamMedis = RekamMedis::create([
+            'user_id' => $request->user_id,
+            'no_rekam_medis' => $get_existing_rekam_medis->no_rekam_medis,
+            'nomer_kk' => $request->nomer_kk
+        ]);
 
+        return response()->json([
+            'status' => 'success',
+            'data' => $rekamMedis
+        ], 200);
     }
 
     /**
@@ -134,22 +149,33 @@ class RekamMedisController extends Controller
      */
     public function update(Request $request, RekamMedis $rekamMedis)
     {
-        $rekamMedis = RekamMedis::find($rekamMedis->id);
-        $rekamMedis->nomer_kk = $request->nomer_kk; // update nomer_kk
+        $rekamMedis = RekamMedis::with('user.userDetail.keluarga')->where('nomer_kk', $request->nomer_kk)->get();
 
-        try {
-            $rekamMedis->save();
+        // return $rekamMedis['user']['user_detail']['keluarga']['nama'];
 
-            return response()->json([
-                'status' => 'success',
-                'data' => $rekamMedis
-            ], 200);
-        } catch (\Exception $e) {
-            return response()->json([
-                'status' => 'error',
-                'message' => $e->getMessage()
-            ], 500);
+        foreach ($rekamMedis as $rm) {
+            if ($request->user_id == $rm['user']['id']) {
+                if (strtolower($rm['user']->userDetail->keluarga->nama) == strtolower('Ayah')) {
+                    return response()->json([
+                        'status' => 'error',
+                        'message' => 'Cannot update record for Ayah'
+                    ], 403);
+                }
+
+                $rekamMedis->update([
+                    'user_id' => $request->user_id,
+                    'no_rekam_medis' => $rm->no_rekam_medis,
+                    'nomer_kk' => $request->nomer_kk
+                ]);
+            }
         }
+
+
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $rekamMedis
+        ], 200);
     }
 
     /**
@@ -157,7 +183,12 @@ class RekamMedisController extends Controller
      */
     public function destroy(RekamMedis $rekamMedis)
     {
-        
+        $rekamMedis->delete();
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Rekam Medis deleted successfully'
+        ], 200);
     }
 
     private function generateNoRekamMedis($noKK)
