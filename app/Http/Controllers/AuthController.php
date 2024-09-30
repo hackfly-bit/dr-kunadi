@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth as UserAuth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Ladder\Roles\Models\Role;
 
 class AuthController extends Controller
 {
@@ -65,10 +66,13 @@ class AuthController extends Controller
         $token = $user->createToken($user->name.'-AuthToken')->plainTextToken;
         return response()->json([
             'message' => 'Login Success',
-            'nama' => $user->name,
+            'id' => $user->id,
+            'username' => $user->name,
             'email' => $user->email,
-            'role' => $user->role,
+            'nama_lengkap' => $user->userDetail->nama_lengkap,
+            'role' => $user->roles->first()->role,
             'access_token' => $token,
+            'nomer_rm' => $user->rekamMedis->no_rekam_medis,
         ],200);
     }
 
