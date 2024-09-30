@@ -12,28 +12,19 @@ jobs:
 
     steps:
       - name: Get the latest code
-        uses: actions/checkout@v4  # You can keep using this; GitHub will handle Node.js 20 transition
+        uses: actions/checkout@v4  # Ensure you have the latest code
 
       - name: Set up PHP
-        uses: shivammathur/setup-php@v2  # Set up the PHP version
+        uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.2'  # Ensure you are running PHP 8.1+ if using `readonly`
+          php-version: '8.2'
           extensions: mbstring, intl, bcmath, curl
 
       - name: Install Composer
         run: sudo apt-get install composer
 
-      - name: Copy .env
-        run: php -r "file_exists('.env') || copy('.env.example', '.env');"
-
       - name: Install Dependencies
         run: composer install --no-interaction --prefer-dist --optimize-autoloader --ignore-platform-reqs
-
-      - name: Generate key
-        run: php artisan key:generate
-
-      - name: Generate storage link
-        run: php artisan storage:link
 
       - name: Directory Permissions
         run: chmod -R 777 storage bootstrap/cache
