@@ -6,6 +6,7 @@ use App\Models\DailyLog;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use App\Models\User;
 
 class DailyLogController extends Controller
 {
@@ -112,13 +113,19 @@ class DailyLogController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(DailyLog $dailyLog)
+    public function show($id)
     {
-        $dailyLog = DailyLog::find($dailyLog->id);
+
+        $params = [
+            'tanggal' => request('tanggal'),
+        ];
+        $user = User::find($id);
+        $dailyLog = DailyLog::where('user_id', $user->id)->where('tanggal', $params['tanggal'])->first();
         return response()->json([
             'status' => 'success',
             'data' => $dailyLog
-        ], 200);     
+        ], 200);
+
     }
 
     /**
