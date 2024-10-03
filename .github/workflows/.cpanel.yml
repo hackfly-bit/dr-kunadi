@@ -36,5 +36,5 @@ jobs:
           username: ${{ secrets.USERNAME }}
           password: ${{ secrets.PASSWORD }}
 
-      - name: Clear cache (optional)
-        run: php artisan cache:clear
+      # - name: Clear cache (optional)
+      #   run: php artisan cache:clear
