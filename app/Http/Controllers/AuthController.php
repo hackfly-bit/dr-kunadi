@@ -102,6 +102,26 @@ class AuthController extends Controller
         ], 200);
     }
 
+    public function uploadedAvatar(Request $request)
+    {
+        $request->validate([
+            'avatar' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048'
+        ]);
+
+        $user = User::find(UserAuth::user()->id);
+
+        $avatarName = $user->id.'_avatar'.time().'.'.request()->avatar->getClientOriginalExtension();
+
+        $request->avatar->storeAs('avatars', $avatarName);
+
+        $user->avatar = $avatarName;
+        $user->save();
+
+        return response()->json([
+            'message' => 'Avatar uploaded successfully'
+        ], 200);
+    }
+
     public function logout()
     {
         UserAuth::user()->tokens()->delete();
