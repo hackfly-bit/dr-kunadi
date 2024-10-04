@@ -28,6 +28,15 @@ jobs:
 
       - name: Directory Permissions
         run: chmod -R 777 storage bootstrap/cache
+        
+      - name: Download sync state file
+        env:
+          FTP_SERVER: ${{ secrets.SERVER }}
+          FTP_USERNAME: ${{ secrets.USERNAME }}
+          FTP_PASSWORD: ${{ secrets.PASSWORD }}
+        run: |
+          sudo apt-get install -y lftp
+          lftp -c "open -u $FTP_USERNAME,$FTP_PASSWORD $FTP_SERVER; get .ftp-deploy-sync-state.json -o .ftp-deploy-sync-state.json"
 
       - name: 📂 Sync files
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
