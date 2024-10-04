@@ -20,32 +20,15 @@ jobs:
           php-version: '8.2'
           extensions: mbstring, intl, bcmath, curl
 
-      - name: Install Composer
-        run: sudo apt-get install composer
-
       - name: Install Dependencies
         run: composer install --no-interaction --prefer-dist --optimize-autoloader --ignore-platform-reqs
 
       - name: Directory Permissions
         run: chmod -R 777 storage bootstrap/cache
-      - name: Download sync state file
-        env:
-          FTP_SERVER: ${{ secrets.SERVER }}
-          FTP_USERNAME: ${{ secrets.USERNAME }}
-          FTP_PASSWORD: ${{ secrets.PASSWORD }}
-        run: |
-          sudo apt-get install -y lftp
-          lftp -c "set ssl:verify-certificate no; open -u $FTP_USERNAME,$FTP_PASSWORD $FTP_SERVER; get .ftp-deploy-sync-state.json -o .ftp-deploy-sync-state.json" || true
 
-      - name: 📂 Sync files
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+      - name: Deploy
+        uses: deployphp/action@v1
         with:
-          server: ${{ secrets.SERVER }}
-          username: ${{ secrets.USERNAME }}
-          password: ${{ secrets.PASSWORD }}
-          state-name: .ftp-deploy-sync-state.json
-          exclude: |
-            **/.git*
-            **/.git*/**
-            **/composer-home/**
-            **/vendor/**
+          private-key: ${{ secrets.PRIVATE_KEY }}
+          dep: deploy
+   
