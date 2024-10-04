@@ -44,3 +44,5 @@ jobs:
           username: ${{ secrets.USERNAME }}
           password: ${{ secrets.PASSWORD }}
           state-name: .ftp-deploy-sync-state.json
+          exclude: |
+            **/vendor/**
