@@ -20,15 +20,21 @@ jobs:
           php-version: '8.2'
           extensions: mbstring, intl, bcmath, curl
 
+      - name: Install Composer
+        run: sudo apt-get install composer
+
       - name: Install Dependencies
         run: composer install --no-interaction --prefer-dist --optimize-autoloader --ignore-platform-reqs
 
       - name: Directory Permissions
         run: chmod -R 777 storage bootstrap/cache
 
-      - name: Deploy
-        uses: deployphp/action@v1
+      - name: 📂 Sync files
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
-          private-key: ${{ secrets.PRIVATE_KEY }}
-          dep: deploy
-   
+          server: ${{ secrets.SERVER }}
+          username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.PASSWORD }}
+
+      # - name: Clear cache (optional)
+      #   run: php artisan cache:clear
