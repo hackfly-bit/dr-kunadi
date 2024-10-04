@@ -45,4 +45,7 @@ jobs:
           password: ${{ secrets.PASSWORD }}
           state-name: .ftp-deploy-sync-state.json
           exclude: |
+            **/.git*
+            **/.git*/**
+            **/composer-home/**
             **/vendor/**
