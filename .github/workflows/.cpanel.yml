@@ -11,40 +11,24 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Checkout the latest code
       - name: Get the latest code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v4  # Ensure you have the latest code
 
-      # Set up PHP
       - name: Set up PHP
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.2'
           extensions: mbstring, intl, bcmath, curl
 
-      # Install dependencies
       - name: Install Dependencies
         run: composer install --no-interaction --prefer-dist --optimize-autoloader --ignore-platform-reqs
 
-      # Set directory permissions
-      - name: Set Directory Permissions
+      - name: Directory Permissions
         run: chmod -R 777 storage bootstrap/cache
 
-      # Create the private key file from secrets
-      - name: Create SSH key file
-        run: |
-          echo "${{ secrets.PRIVATE_KEY }}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-
-      # Set up SSH Agent and add the private key
-      - name: Set up SSH Agent
-        uses: webfactory/ssh-agent@v0.5.3
-        with:
-          ssh-private-key: |
-            ${{ secrets.PRIVATE_KEY }}
-
-      # Deploy the application using deployphp action
       - name: Deploy
         uses: deployphp/action@v1
         with:
+          private-key: ${{ secrets.PRIVATE_KEY }}
           dep: deploy
+   
