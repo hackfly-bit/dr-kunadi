@@ -27,7 +27,7 @@ class DailyLogController extends Controller
                 $dailyLogs = DailyLog::all();
             }
         } else {
-            $dailyLogs = DailyLog::where('user_id', Auth::user()->id)->whereBetween('date', [$startDate, $endDate])->get();
+            $dailyLogs = DailyLog::where('user_id', Auth::user()->id);
         }
 
         $status = $dailyLogs->count() > 0 ? 'success' : 'failed';    
