@@ -30,11 +30,18 @@ jobs:
       - name: Set Directory Permissions
         run: chmod -R 777 storage bootstrap/cache
 
-      # Set up SSH agent and add the private key
+      # Create the private key file from secrets
+      - name: Create SSH key file
+        run: |
+          echo "${{ secrets.PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+
+      # Set up SSH Agent and add the private key
       - name: Set up SSH Agent
         uses: webfactory/ssh-agent@v0.5.3
         with:
-          ssh-private-key: ${{ secrets.PRIVATE_KEY }}
+          ssh-private-key: |
+            ${{ secrets.PRIVATE_KEY }}
 
       # Deploy the application using deployphp action
       - name: Deploy
