@@ -37,9 +37,9 @@ jobs:
           password: ${{ secrets.PASSWORD }}
           # server-dir: /home/anet4435/public_html/appd.aneramedia.com/
           server-dir: /
-          timeout: 100000
-          protocol: ftps
-          state-name: .ftp-deploy-sync-state.json
+          # timeout: 100000
+          # protocol: ftps
+          # state-name: .ftp-deploy-sync-state.json
 
       # - name: 📂 Sync Files
       #   uses: SamKirkland/web-deploy@v1
