@@ -35,7 +35,7 @@ jobs:
           server: ${{ secrets.SERVER }}
           username: ${{ secrets.USERNAME }}
           password: ${{ secrets.PASSWORD }}
-          # server-dir: '/'
+          server-dir: '/'
           # state-name: '.ftp-deploy-sync-state.json'
 
       # - name: Clear cache (optional)
