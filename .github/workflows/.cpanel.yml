@@ -53,7 +53,7 @@ jobs:
         uses: pinkasey/cpanel-deploy-action@v1.0.0
         with:
           hostname: 'https://appd.aneramedia.com'
-          repository_root: '/home/anet4435/public_html/appd.aneramedia.com"'
+          repository_root: '/home/anet4435/public_html/appd.aneramedia.com'
           branch: main
           cpanel_username: '${{ secrets.CPANEL_USERNAME }}'
           cpanel_token: '${{ secrets.CPANEL_TOKEN }}'
