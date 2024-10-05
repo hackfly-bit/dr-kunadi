@@ -48,15 +48,9 @@ jobs:
       #       ls -al
       #       echo $RSYNC_STDOUT
 
-      - name: Deploy to cPanel
-        id: deploy
-        uses: pinkasey/cpanel-deploy-action@v1.0.0
+      - name: Upload from public_html via FTP
+        uses: airvzxf/ftp-deployment-action@latest
         with:
-          hostname: 'https://appd.aneramedia.com'
-          repository_root: '/home/anet4435/public_html/appd.aneramedia.com'
-          branch: main
-          cpanel_username: '${{ secrets.CPANEL_USERNAME }}'
-          cpanel_token: '${{ secrets.CPANEL_TOKEN }}'
-      # - name: echo deploy-duration
-      #   run: echo "Deployment took ${{ steps.deploy.outputs.duration }} milliseconds"
-
+          server: ${{ secrets.SERVER }}
+          user: ${{ secrets.USERNAME }}
+          password: ${{ secrets.PASSWORD }}
