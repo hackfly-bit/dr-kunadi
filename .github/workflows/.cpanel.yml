@@ -40,6 +40,7 @@ jobs:
           TARGET: "/home/anet4435/public_html/appd.aneramedia.com"
           SCRIPT_BEFORE: |
             ssh-keyscan -H ${{ secrets.HOST }} >> ~/.ssh/known_hosts
+            which rsync || echo "rsync not installed"
             whoami
             ls -al
           SCRIPT_AFTER: |
