@@ -35,8 +35,8 @@ jobs:
           server: ${{ secrets.SERVER }}
           username: ${{ secrets.USERNAME }}
           password: ${{ secrets.PASSWORD }}
-          server-dir: '/'
-          state-name: '/home/anet4435/public_html/appd.aneramedia.com/.ftp-deploy-sync-state.json'
+          server-dir: '/home/anet4435/public_html/appd.aneramedia.com/'
+          state-name: '.ftp-deploy-sync-state.json'
 
       # - name: Clear cache (optional)
       #   run: php artisan cache:clear
