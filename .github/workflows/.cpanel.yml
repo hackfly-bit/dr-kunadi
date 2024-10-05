@@ -12,12 +12,12 @@ jobs:
 
     steps:
       - name: Get the latest code
-        uses: actions/checkout@v4  # Ensure you have the latest code
+        uses: actions/checkout@v4 # Ensure you have the latest code
 
       - name: Set up PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.2'
+          php-version: "8.2"
           extensions: mbstring, intl, bcmath, curl
 
       - name: Install Composer
@@ -29,14 +29,14 @@ jobs:
       - name: Directory Permissions
         run: chmod -R 777 storage bootstrap/cache
 
-      - name : Sync files to cPanel
-        uses : easingthemes/ftp-deploy-action@v5.1.0
-        env  :
+      - name: Sync files to cPanel
+        uses: easingthemes/ssh-deploy@main
+        env:
           SSH_PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
           REMOTE_HOST: ${{ secrets.HOST }}
           REMOTE_USERNAME: ${{ secrets.USERNAME }}
-          SOURCE: '.'
-          TARGET: '/home/anet4435/public_html/appd.aneramedia.com'
+          SOURCE: "."
+          TARGET: "/home/anet4435/public_html/appd.aneramedia.com"
 
           # state-name: '.ftp-deploy-sync-state.json'
 
