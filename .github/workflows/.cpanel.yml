@@ -38,13 +38,13 @@ jobs:
           REMOTE_PORT: 2223
           SOURCE: "."
           TARGET: "/home/anet4435/public_html/appd.aneramedia.com"
-          # SCRIPT_BEFORE: |
-          #   whoami
-          #   ls -al
-          # SCRIPT_AFTER: |
-          #   whoami
-          #   ls -al
-          #   echo $RSYNC_STDOUT
+          SCRIPT_BEFORE: |
+            whoami
+            ls -al
+          SCRIPT_AFTER: |
+            whoami
+            ls -al
+            echo $RSYNC_STDOUT
 
           # state-name: '.ftp-deploy-sync-state.json'
 
