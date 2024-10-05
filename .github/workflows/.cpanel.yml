@@ -29,22 +29,34 @@ jobs:
       - name: Directory Permissions
         run: chmod -R 777 storage bootstrap/cache
 
-      - name: Sync files to cPanel
-        uses: easingthemes/ssh-deploy@main
-        env:
-          SSH_PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
-          REMOTE_HOST: ${{ secrets.HOST }}
-          REMOTE_USER: ${{ secrets.CPANEL_USERNAME }}
-          REMOTE_PORT: 2223
-          SOURCE: "."
-          TARGET: "/home/anet4435/public_html/appd.aneramedia.com"
-          SCRIPT_BEFORE: |
-            ssh-keyscan -H ${{ secrets.HOST }} >> ~/.ssh/known_hosts
-            which rsync || echo "rsync not installed"
-            whoami
-            ls -al
-          SCRIPT_AFTER: |
-            whoami
-            ls -al
-            echo $RSYNC_STDOUT
+      # - name: Sync files to cPanel
+      #   uses: easingthemes/ssh-deploy@main
+      #   env:
+      #     SSH_PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
+      #     REMOTE_HOST: ${{ secrets.HOST }}
+      #     REMOTE_USER: ${{ secrets.CPANEL_USERNAME }}
+      #     REMOTE_PORT: 2223
+      #     SOURCE: "."
+      #     TARGET: "/home/anet4435/public_html/appd.aneramedia.com"
+      #     SCRIPT_BEFORE: |
+      #       ssh-keyscan -H ${{ secrets.HOST }} >> ~/.ssh/known_hosts
+      #       which rsync || echo "rsync not installed"
+      #       whoami
+      #       ls -al
+      #     SCRIPT_AFTER: |
+      #       whoami
+      #       ls -al
+      #       echo $RSYNC_STDOUT
+
+      - name: Deploy Using ssh
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.CPANEL_USERNAME }}
+          key: ${{ secrets.PRIVATE_KEY }}
+          port: 2223
+          script: |
+            cd ~/public_html/appd.aneramedia.com
+            git pull origin master
+            git status
 
