@@ -35,6 +35,7 @@ jobs:
           SSH_PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
           REMOTE_HOST: ${{ secrets.HOST }}
           REMOTE_USER: ${{ secrets.CPANEL_USERNAME }}
+          REMOTE_PORT: 2223
           SOURCE: "."
           TARGET: "/home/anet4435/public_html/appd.aneramedia.com"
 
