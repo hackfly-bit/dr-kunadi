@@ -56,6 +56,6 @@ jobs:
           repository_root: '/home/anet4435/public_html/appd.aneramedia.com"'
           branch: main
           cpanel_token: '${{ secrets.CPANEL_TOKEN }}'
-      - name: echo deploy-duration
-        run: echo "Deployment took ${{ steps.deploy.outputs.duration }} milliseconds"
+      # - name: echo deploy-duration
+      #   run: echo "Deployment took ${{ steps.deploy.outputs.duration }} milliseconds"
 
