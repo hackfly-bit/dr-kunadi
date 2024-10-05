@@ -35,6 +35,7 @@ jobs:
           server: ${{ secrets.SERVER }}
           username: ${{ secrets.USERNAME }}
           password: ${{ secrets.PASSWORD }}
+          server-dir: /
 
       # - name: Clear cache (optional)
       #   run: php artisan cache:clear
