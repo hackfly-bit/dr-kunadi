@@ -35,20 +35,5 @@ jobs:
           server: ${{ secrets.SERVER }}
           username: ${{ secrets.USERNAME }}
           password: ${{ secrets.PASSWORD }}
-          # server-dir: /home/anet4435/public_html/appd.aneramedia.com/
           server-dir: /
-          # timeout: 100000
-          # protocol: ftps
-          # state-name: .ftp-deploy-sync-state.json
-
-      # - name: 📂 Sync Files
-      #   uses: SamKirkland/web-deploy@v1
-      #   with:
-      #     target-server: 203.175.9.138
-      #     remote-user: anet4435
-      #     private-ssh-key: ${{ secrets.PRIVATE_KEY }}
-      #     destination-path: /home/anet4435/public_html/appd.aneramedia.com
-      #     ssh-port: 2223
-          
-      # - name: Clear cache (optional)
-      #   run: php artisan cache:clear
+     
