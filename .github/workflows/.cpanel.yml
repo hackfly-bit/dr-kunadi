@@ -43,7 +43,7 @@ jobs:
         uses: SamKirkland/web-deploy@v1
         with:
           target-server: 203.175.9.138
-          remote-user: deployer
+          remote-user: anet4435
           private-ssh-key: ${{ secrets.PRIVATE_KEY }}
           destination-path: /home/anet4435/public_html/appd.aneramedia.com
           ssh-port: 2223
