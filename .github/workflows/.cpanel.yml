@@ -48,14 +48,12 @@ jobs:
       #       ls -al
       #       echo $RSYNC_STDOUT
 
-      - name: Deploy Using ssh
-        uses: hengkx/ssh-deploy@v1.0.1
-        env:
-          HOST: ${{ secrets.HOST }}
-          USERNAME: ${{ secrets.CPANEL_USERNAME }}
-          PASSWORD: ${{ secrets.CPANEL_PASSWORD }}
-          PORT: 2223
-          SOURCE: '/'
-          TARGET: "/home/anet4435/public_html/appd.aneramedia.com"
-          AFTER_COMMAND: 'echo "Deployment completed"'
+      - name: Deploy Laravel project
+        uses: FlowSahl/laravel-zero-time@v1.0.3
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.CPANEL_USERNAME }}
+          password: ${{ secrets.CPANEL_PASSWORD }}
+          port: 2223
+          target: 'home/anet4435/public_html/appd.aneramedia.com'  
 
