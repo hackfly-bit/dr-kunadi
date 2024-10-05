@@ -30,7 +30,7 @@ jobs:
         run: chmod -R 777 storage bootstrap/cache
 
       - name: 📂 Sync files
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.3
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
         with:
           server: ${{ secrets.SERVER }}
           username: ${{ secrets.USERNAME }}
