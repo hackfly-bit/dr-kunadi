@@ -35,6 +35,9 @@ jobs:
           server: ${{ secrets.SERVER }}
           username: ${{ secrets.USERNAME }}
           password: ${{ secrets.PASSWORD }}
+          timeout: 100000
+          protocol: sftp
+          state-name: .ftp-deploy-sync-state.json
 
       # - name: Clear cache (optional)
       #   run: php artisan cache:clear
