@@ -30,13 +30,13 @@ jobs:
         run: chmod -R 777 storage bootstrap/cache
 
       - name: 📂 Sync files
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.3
         with:
           server: ${{ secrets.SERVER }}
           username: ${{ secrets.USERNAME }}
           password: ${{ secrets.PASSWORD }}
-          server-dir: '/'
-          state-name: '.ftp-deploy-sync-state.json'
+          # server-dir: '/'
+          # state-name: '.ftp-deploy-sync-state.json'
 
       # - name: Clear cache (optional)
       #   run: php artisan cache:clear
