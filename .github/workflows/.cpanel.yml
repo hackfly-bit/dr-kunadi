@@ -29,13 +29,15 @@ jobs:
       - name: Directory Permissions
         run: chmod -R 777 storage bootstrap/cache
 
-      - name: 📂 Sync files
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
-        with:
-          server: ${{ secrets.SERVER }}
-          username: ${{ secrets.USERNAME }}
-          password: ${{ secrets.PASSWORD }}
-          server-dir: public_html/appd.aneramedia.com/
+      - name : Sync files to cPanel
+        uses : easingthemes/ftp-deploy-action@v5.1.0
+        env  :
+          SSH_PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
+          REMOTE_HOST: ${{ secrets.HOST }}
+          REMOTE_USERNAME: ${{ secrets.USERNAME }}
+          SOURCE: '.'
+          TARGET: '/home/anet4435/public_html/appd.aneramedia.com'
+
           # state-name: '.ftp-deploy-sync-state.json'
 
       # - name: Clear cache (optional)
