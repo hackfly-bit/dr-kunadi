@@ -36,7 +36,7 @@ jobs:
           username: ${{ secrets.USERNAME }}
           password: ${{ secrets.PASSWORD }}
           timeout: 100000
-          protocol: sftp
+          protocol: ftps
           state-name: .ftp-deploy-sync-state.json
 
       # - name: Clear cache (optional)
