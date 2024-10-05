@@ -49,8 +49,9 @@ jobs:
       #       echo $RSYNC_STDOUT
 
       - name: Upload from public_html via FTP
-        uses: airvzxf/ftp-deployment-action@latest
+        uses: yankewei/laravel-deploy-action@main
         with:
-          server: ${{ secrets.SERVER }}
-          user: ${{ secrets.USERNAME }}
-          password: ${{ secrets.PASSWORD }}
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.CPANEL_USERNAME }}
+          password: ${{ secrets.CPANEL_PASSWORD }}
+          app_env_data: ${{ secrets.ENV_DATA }}
