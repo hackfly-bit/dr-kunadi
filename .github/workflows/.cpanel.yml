@@ -39,6 +39,7 @@ jobs:
           SOURCE: "."
           TARGET: "/home/anet4435/public_html/appd.aneramedia.com"
           SCRIPT_BEFORE: |
+            ssh-keyscan -H ${{ secrets.HOST }} >> ~/.ssh/known_hosts
             whoami
             ls -al
           SCRIPT_AFTER: |
@@ -46,7 +47,3 @@ jobs:
             ls -al
             echo $RSYNC_STDOUT
 
-          # state-name: '.ftp-deploy-sync-state.json'
-
-      # - name: Clear cache (optional)
-      #   run: php artisan cache:clear
